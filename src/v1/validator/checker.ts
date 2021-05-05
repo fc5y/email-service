@@ -1,6 +1,6 @@
 import { Validator} from "validator.ts/Validator";
-import { logicError} from "../constants/errors"
-import { errorName} from "../constants/errors";
+import { LogicError} from "../constants/errors"
+import { ERRORS} from "../constants/errors"
 import { knex } from "..";
 
 const validator = new Validator();
@@ -18,23 +18,23 @@ export async function checker(
     ){
         
         if (validator.isEmail(sender_email,{}) == false) {
-            return new logicError(errorName.INVALID_SENDER_EMAIL)
+            return new LogicError(ERRORS.INVALID_SENDER_EMAIL)
         }
       
         if (validator.isEmail(recipient_email,{}) == false) {
-          return new logicError(errorName.INVALID_RECIPIENT_EMAIL)
+          return new LogicError(ERRORS.INVALID_RECIPIENT_EMAIL)
         }
         
         if (params.otp == null || params.displayed_name == null) {
-          return new logicError(errorName.INVALID_PARAMS);
+          return new LogicError(ERRORS.INVALID_PARAMS);
         }
         
         if (validator.matches(params.otp,/^[0-9]{6}$/) == false) {
-          return new logicError(errorName.INVALID_OTP);
+          return new LogicError(ERRORS.INVALID_OTP);
         }
       
         if (template_id<10001 || template_id != 10001) {
-          return new logicError(errorName.INVALID_TEMPLATE_ID);
+          return new LogicError(ERRORS.INVALID_TEMPLATE_ID);
         }
 
         const sentMailNumber = await knex('Mail_Sent_History')
@@ -45,7 +45,7 @@ export async function checker(
                                 .limit(1)
                                 .offset(sentMailNumber[0].CNT - SYSTEM_EMAIL_RATE_LIMIT);
           if ((new Date().getTime()) - row[0].Time < ONE_MINUTES) {
-            return new logicError (errorName.SYSTEM_RATE_LIMIT_EXCEEDED);
+            return new LogicError(ERRORS.SYSTEM_RATE_LIMIT_EXCEEDED);
           }
         }
 
@@ -58,8 +58,8 @@ export async function checker(
                         .limit(1)
                         .offset(num[0].CNT - RECIPIENT_EMAIL_RATE_LIMIT);
         if ((new Date().getTime()) - lastTime[0].Time < FIVE_MINUTES) {
-          return new logicError(errorName.RECIPIENT_RATE_LIMIT_EXCEEDED)
+          return new LogicError(ERRORS.RECIPIENT_RATE_LIMIT_EXCEEDED)
         }
 
-        return new logicError(errorName.NO_ERROR);
+        return new LogicError(ERRORS.NO_ERROR);
 }

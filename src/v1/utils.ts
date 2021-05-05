@@ -1,8 +1,7 @@
-import { Request } from 'express-serve-static-core';
 import * as nodemailer from 'nodemailer';
 import { createText} from "./constants/templates"
-import { logicError} from "./constants/errors"
-import { errorName} from "./constants/errors";
+import { LogicError} from "./constants/errors"
+import { ERRORS} from "./constants/errors"
 import { checker} from "./validator/checker";
 import { knex} from "./index";
 import * as dotenv from 'dotenv';
@@ -62,9 +61,9 @@ export async function sendOtp(
 
         });
 
-        return new logicError(errorName.NO_ERROR); 
+        return new LogicError(ERRORS.NO_ERROR); 
       } catch (info) {
-        return new logicError(errorName.SEND_EMAIL_ERROR);
+        return new LogicError(ERRORS.SEND_EMAIL_ERROR);
       }
     }
     

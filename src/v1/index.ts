@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { getCurrentTimestamp } from "./utils";
 import { sendOtp} from "./utils";
-import { logicError} from "./constants/errors"
+import { LogicError} from "./constants/errors"
 import Knex from "knex"
 
 export const knex = Knex ({
@@ -30,10 +30,10 @@ router.post("/send", (req: Request, res: Response) => {
     req.body.template_id,
     req.body.params
   )
-  .then((e: logicError) =>{
+  .then((e: LogicError) =>{
     res.json({
       error: e.code,
-      error_msg: e.message
+      error_msg: e.msg
     })
   })
 });
