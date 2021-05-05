@@ -1,7 +1,4 @@
 import { Validator} from "validator.ts/Validator";
-import { LogicError} from "../constants/errors"
-import { ERRORS} from "../constants/errors"
-import { knex } from "..";
 
 const validator = new Validator();
 
@@ -10,56 +7,39 @@ const ONE_MINUTES = 60000;
 const SYSTEM_EMAIL_RATE_LIMIT = 500;
 const RECIPIENT_EMAIL_RATE_LIMIT = 5;
 
-export async function checker(
-        sender_email: string, 
-        recipient_email: string, 
-        template_id: number,
-        params: {[key: string]: string}
-    ){
-        
-        if (validator.isEmail(sender_email,{}) == false) {
-            return new LogicError(ERRORS.INVALID_SENDER_EMAIL)
-        }
-      
-        if (validator.isEmail(recipient_email,{}) == false) {
-          return new LogicError(ERRORS.INVALID_RECIPIENT_EMAIL)
-        }
-        
-        if (params.otp == null || params.displayed_name == null) {
-          return new LogicError(ERRORS.INVALID_PARAMS);
-        }
-        
-        if (validator.matches(params.otp,/^[0-9]{6}$/) == false) {
-          return new LogicError(ERRORS.INVALID_OTP);
-        }
-      
-        if (template_id<10001 || template_id != 10001) {
-          return new LogicError(ERRORS.INVALID_TEMPLATE_ID);
-        }
+export class Checker{
 
-        const sentMailNumber = await knex('Mail_Sent_History')
-                                     .count('* as CNT');
-        if (sentMailNumber[0].CNT >= SYSTEM_EMAIL_RATE_LIMIT) {
-          const row = await knex.select('Time')
-                                .from('Mail_Sent_History')
-                                .limit(1)
-                                .offset(sentMailNumber[0].CNT - SYSTEM_EMAIL_RATE_LIMIT);
-          if ((new Date().getTime()) - row[0].Time < ONE_MINUTES) {
-            return new LogicError(ERRORS.SYSTEM_RATE_LIMIT_EXCEEDED);
-          }
-        }
+  isEmail(email: string) {
+    if ( !validator.isEmail(email,{}) ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+        
+  isOtp(otp: string) {
+    if ( !validator.matches(otp,/^[0-9]{6}$/) ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
-        const num = await knex('Mail_Sent_History')
-                          .count('* as CNT')
-                          .where('recipient_email',recipient_email);
-        const lastTime = await knex('Mail_Sent_History')
-                        .select('*')
-                        .where('recipient_email',recipient_email)
-                        .limit(1)
-                        .offset(num[0].CNT - RECIPIENT_EMAIL_RATE_LIMIT);
-        if ((new Date().getTime()) - lastTime[0].Time < FIVE_MINUTES) {
-          return new LogicError(ERRORS.RECIPIENT_RATE_LIMIT_EXCEEDED)
-        }
+  isTemplateId(templateId: number) {
+    if ( (templateId != 10001) ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
-        return new LogicError(ERRORS.NO_ERROR);
+  isParams(params: {[key: string]: string}) {
+    if (params.otp == null || params.displayed_name == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
+
+

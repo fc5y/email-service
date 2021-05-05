@@ -30,10 +30,16 @@ router.post("/send", (req: Request, res: Response) => {
     req.body.template_id,
     req.body.params
   )
-  .then((e: LogicError) =>{
+  .then(() => {
     res.json({
-      error: e.code,
-      error_msg: e.msg
+      error: 0,
+      error_msg: "",
+    })
+  })
+  .catch(( error: LogicError ) => {
+    res.json({
+      error: error.code,
+      error_msg: error.msg,
     })
   })
 });

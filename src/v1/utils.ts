@@ -2,8 +2,7 @@ import * as nodemailer from 'nodemailer';
 import { createText} from "./constants/templates"
 import { LogicError} from "./constants/errors"
 import { ERRORS} from "./constants/errors"
-import { checker} from "./validator/checker";
-import { knex} from "./index";
+import { Checker} from "./validator/checker";
 import * as dotenv from 'dotenv';
 import * as google from 'googleapis';
 
@@ -25,12 +24,24 @@ export async function sendOtp(
     params: {[key: string]: string}
   ){
 
-    const is_valid = await checker(sender_email, recipient_email, template_id, params);
-    if (is_valid.code != 0) {
-      return is_valid;
-    } 
+    const checker = new Checker();
+    if ( !(checker.isEmail(sender_email)) ) {
+      throw new LogicError(ERRORS.INVALID_SENDER_EMAIL);
+    }
+    if ( !(checker.isEmail(recipient_email)) ) {
+      throw new LogicError(ERRORS.INVALID_RECIPIENT_EMAIL);
+    }
+    if ( !(checker.isParams(params)) ) {
+      throw new LogicError(ERRORS.INVALID_PARAMS);
+    }
+    if ( !(checker.isOtp(params.otp)) ) {
+      throw new LogicError(ERRORS.INVALID_OTP);
+    }
+    if ( !(checker.isTemplateId(template_id)) ) {
+      throw new LogicError(ERRORS.INVALID_TEMPLATE_ID);
+    }
 
-    const access_Token = (await oAtuh2Client.getAccessToken()).toString();
+    const accessToken = (await oAtuh2Client.getAccessToken()).toString();
     const transporter = nodemailer.createTransport({ 
       service: 'gmail',
       auth: {
@@ -39,7 +50,7 @@ export async function sendOtp(
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         refreshToken: process.env.REFRESH_TOKEN,
-        accessToken: access_Token
+        accessToken: accessToken
       }
     });
 
@@ -53,19 +64,10 @@ export async function sendOtp(
 
       try {
         const info = await transporter.sendMail(options);
-
-        knex("Mail_Sent_History").insert({
-          recipient_email: recipient_email,
-          Time: new Date().getTime()
-        }).then( () =>{
-
-        });
-
-        return new LogicError(ERRORS.NO_ERROR); 
-      } catch (info) {
-        return new LogicError(ERRORS.SEND_EMAIL_ERROR);
+      } catch(info) {
+        throw new LogicError(ERRORS.SEND_EMAIL_ERROR);
       }
     }
     
-    return await sendOtpEmail();
+    await sendOtpEmail();
 }

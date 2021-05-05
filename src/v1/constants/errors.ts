@@ -1,8 +1,4 @@
 export const ERRORS = {
-    NO_ERROR: {
-        code: 0,
-        msg: "",
-    },
     SEND_EMAIL_ERROR: {
         code: 200000,
         msg: "Send email error",

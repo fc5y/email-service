@@ -1,5 +1,3 @@
-import { data } from "jquery";
-
 const template_1 = 10001;
 
 var templateMap: any[] = [];
