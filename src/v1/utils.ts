@@ -1,10 +1,10 @@
 import * as nodemailer from 'nodemailer';
-import { createText} from "./constants/templates"
 import { LogicError} from "./constants/errors"
 import { ERRORS} from "./constants/errors"
 import { Checker} from "./validator/checker";
 import * as dotenv from 'dotenv';
 import * as google from 'googleapis';
+import { createEmailContent} from './constants/templates'
 
 export function getCurrentTimestamp() {
   return Math.floor(new Date().getTime() / 1000);
@@ -54,12 +54,13 @@ export async function sendOtp(
       }
     });
 
+    const emailContent = createEmailContent(10001, params);
     async function sendOtpEmail() {
       let options = { 
         from: sender_email, 
         to: recipient_email, 
-        subject: "Mã xác minh (OTP)", 
-        text: createText(template_id, params),
+        subject: emailContent.subject, 
+        text: emailContent.text,
       }
 
       try {
