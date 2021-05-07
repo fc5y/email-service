@@ -1,8 +1,8 @@
-import { LogicError} from "./utils/errors"
+import { LogicError} from "./logic/errors"
 import { ERRORS} from "./constants/errors"
 import { Checker} from "./validator/checker"
-import { sendOtpEmail} from "./utils/emails"
-import { rateLimiters} from "./utils/rateLimiters"
+import { sendOtpEmail} from "./logic/emails"
+import { rateLimiters} from "./logic/rateLimiters"
 
 export function getCurrentTimestamp() {
   return Math.floor(new Date().getTime() / 1000);

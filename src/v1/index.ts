@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import { getCurrentTimestamp } from "./utils";
 import { sendOtp} from "./utils";
-import { LogicError} from "./utils/errors"
+import { LogicError} from "./logic/errors"
 import Knex from "knex"
 
 export const knex = Knex ({
