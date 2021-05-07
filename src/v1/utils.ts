@@ -1,7 +1,8 @@
 import { LogicError} from "./utils/errors"
 import { ERRORS} from "./constants/errors"
-import { Checker} from "./validator/checker";
+import { Checker} from "./validator/checker"
 import { sendOtpEmail} from "./utils/emails"
+import { rateLimiters} from "./utils/rateLimiters"
 
 export function getCurrentTimestamp() {
   return Math.floor(new Date().getTime() / 1000);
@@ -30,6 +31,22 @@ export async function sendOtp(
     if ( !(checker.isTemplateId(template_id)) ) {
       throw new LogicError(ERRORS.INVALID_TEMPLATE_ID);
     }
+
+    if (rateLimiters.sendOtpOverall.isFull("")) {
+     throw new LogicError(ERRORS.SYSTEM_RATE_LIMIT_EXCEEDED);
+    }
+
+    if (rateLimiters.sendOtpPerEmail.isFull(recipient_email)) {
+      console.log("hihi");
+      throw new LogicError(ERRORS.RECIPIENT_RATE_LIMIT_EXCEEDED);
+    }
     
-    sendOtpEmail(sender_email, recipient_email, template_id, params)
+    await sendOtpEmail(sender_email, recipient_email, template_id, params)
+    .then(() => {
+      rateLimiters.sendOtpOverall.push("");
+      rateLimiters.sendOtpPerEmail.push(recipient_email);
+    })
+    .catch((error: LogicError) => {
+      throw new LogicError(ERRORS.SEND_EMAIL_ERROR);
+    })
 }

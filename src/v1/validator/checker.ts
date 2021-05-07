@@ -26,7 +26,7 @@ export class Checker{
   }
 
   isTemplateId(templateId: number) {
-    if ( (templateId != 10001) ) {
+    if ( !(templateId == 10001) ) {
       return false;
     } else {
       return true;
