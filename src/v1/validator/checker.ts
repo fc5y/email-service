@@ -2,11 +2,6 @@ import { Validator} from "validator.ts/Validator";
 
 const validator = new Validator();
 
-const FIVE_MINUTES = 300000;
-const ONE_MINUTES = 60000;
-const SYSTEM_EMAIL_RATE_LIMIT = 500;
-const RECIPIENT_EMAIL_RATE_LIMIT = 5;
-
 export class Checker{
 
   isEmail(email: string) {

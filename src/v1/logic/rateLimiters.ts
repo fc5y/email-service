@@ -23,9 +23,6 @@ class RateLimiter {
   isFull(key: string) {
     this._clean();
     const numQueued = this.queue.filter((item) => item.key === key).length;
-    console.log(numQueued);
-    console.log(this.limit);
-    console.log(numQueued >= this.limit);
     return (numQueued >= this.limit);
   }
 

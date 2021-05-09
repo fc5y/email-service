@@ -2,9 +2,6 @@ import * as dotenv from 'dotenv';
 import * as google from 'googleapis';
 import * as nodemailer from 'nodemailer';
 import { createEmailContent} from './templates'
-import { LogicError} from "./errors"
-import { ERRORS} from "../constants/errors"
-import { rateLimiters} from "./rateLimiters"
 
 dotenv.config();
 
@@ -40,7 +37,7 @@ export async function sendOtpEmail(
   
   const emailContent = createEmailContent(template_id, params);
   
-  let options = { 
+  const options = { 
     from: sender_email, 
     to: recipient_email, 
     subject: emailContent.subject, 
@@ -49,11 +46,4 @@ export async function sendOtpEmail(
 
   const info = await transporter.sendMail(options);
   return info;
-  // try {
-  //  const info = await transporter.sendMail(options);
-  //  rateLimiters.sendOtpOverall.push("");
-  //  rateLimiters.sendOtpPerEmail.push(recipient_email);
-  //} catch(info) {
-  //  throw new LogicError(ERRORS.SEND_EMAIL_ERROR);
-  //}
 }

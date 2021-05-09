@@ -2,14 +2,6 @@ import { Request, Response, Router } from "express";
 import { getCurrentTimestamp } from "./utils";
 import { sendOtp} from "./utils";
 import { LogicError} from "./logic/errors"
-import Knex from "knex"
-
-export const knex = Knex ({
-  client: "sqlite3",
-  connection: {
-    filename : "src/v1/email_service.db"
-  }
-});
 
 const router = Router();
 
@@ -36,11 +28,17 @@ router.post("/send", (req: Request, res: Response) => {
       error_msg: "",
     })
   })
-  .catch(( error: LogicError ) => {
-    res.json({
-      error: error.code,
-      error_msg: error.msg,
-    })
+  .catch( (error: any) => {
+    if (error instanceof LogicError) {
+      res.json({
+        error: error.code,
+        error_msg: error.msg,
+      }) 
+    } else {
+      res.json({
+        error_msg: "Some errors occurred while sending OTP email."
+      })
+    }
   })
 });
 
