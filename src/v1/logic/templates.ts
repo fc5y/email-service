@@ -13,11 +13,13 @@ templateTextMap[TEMPLATE_1] = (params: {[key: string]: string}) => {
     `
 }
 
+var templateSubjectMap: string[] = [];
 
+templateSubjectMap[TEMPLATE_1] = "Mã xác minh (OTP)";
 
 export function createEmailContent(template_id: number, params: {[key: string]: string}) {
     return {
-        subject: "Mã xác minh (OTP)",
+        subject: templateSubjectMap[template_id],
         text: templateTextMap[template_id](params),
     }
 }
