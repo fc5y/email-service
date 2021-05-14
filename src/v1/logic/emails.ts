@@ -5,16 +5,12 @@ import { createEmailContent} from './templates'
 
 dotenv.config();
 
-
-// guide: https://www.youtube.com/watch?v=-rcRf7yswfM
-// em thu lam theo link trong code backend cu nhung bi loi 
-
-const oAthu2Client = new google.Auth.OAuth2Client(
+const oAuth2Client = new google.Auth.OAuth2Client(
     process.env.CLIENT_ID,                                                
     process.env.CLIENT_SECRET,
     process.env.REDIRECT_URI
 );
-oAthu2Client.setCredentials({refresh_token:process.env.REFRESH_TOKEN});
+oAuth2Client.setCredentials({refresh_token:process.env.REFRESH_TOKEN});
 
 export async function sendOtpEmail(
   sender_email: string, 
@@ -22,7 +18,7 @@ export async function sendOtpEmail(
   template_id: number,
   params: {[key: string]: string}
 ) {
-  const accessToken = (await oAthu2Client.getAccessToken()).toString();
+  const accessToken = (await oAuth2Client.getAccessToken()).toString();
   const transporter = nodemailer.createTransport({ 
     service: 'gmail',
     auth: {
@@ -41,7 +37,7 @@ export async function sendOtpEmail(
     from: sender_email, 
     to: recipient_email, 
     subject: emailContent.subject, 
-    text: emailContent.text,
+    text: emailContent.content,
   }
 
   const info = await transporter.sendMail(options);

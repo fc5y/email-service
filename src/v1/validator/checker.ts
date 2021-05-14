@@ -1,39 +1,22 @@
-import { Validator} from "validator.ts/Validator";
-
-const validator = new Validator();
+import validator from 'validator';
 
 export class Checker{
 
   isEmail(email: string) {
-    if ( !validator.isEmail(email,{}) ) {
-      return false;
-    } else {
-      return true;
-    }
+    return validator.isEmail(email,{});
   }
         
   isOtp(otp: string) {
-    if ( !validator.matches(otp,/^[0-9]{6}$/) ) {
-      return false;
-    } else {
-      return true;
-    }
+    return validator.matches(otp,/^[0-9]{6}$/);
+
   }
 
   isTemplateId(templateId: number) {
-    if ( !(templateId == 10001) ) {
-      return false;
-    } else {
-      return true;
-    }
+    return templateId == 10001 ;
   }
 
   isParams(params: {[key: string]: string}) {
-    if (params.otp == null || params.displayed_name == null) {
-      return false;
-    } else {
-      return true;
-    }
+    return !(params.otp == null || params.displayed_name == null);
   }
 }
 

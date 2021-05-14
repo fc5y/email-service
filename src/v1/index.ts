@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { getCurrentTimestamp } from "./utils";
 import { sendOtp} from "./utils";
 import { LogicError} from "./logic/errors"
+import { ERRORS} from "./constants/errors"
 
 const router = Router();
 
@@ -35,8 +36,10 @@ router.post("/send", (req: Request, res: Response) => {
         error_msg: error.msg,
       }) 
     } else {
+      const logicError = new LogicError(ERRORS.SEND_EMAIL_ERROR);
       res.json({
-        error_msg: "Some errors occurred while sending OTP email."
+        error: logicError.code,
+        error_msg: error.message,
       })
     }
   })

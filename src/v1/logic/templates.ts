@@ -1,25 +1,27 @@
-const TEMPLATE_1 = 10001;
-
-var templateTextMap: any[] = [];
-
-templateTextMap[TEMPLATE_1] = (params: {[key: string]: string}) => {
-    return  `
-        Chào bạn ${params.displayed_name}, 
-
-        Mã xác minh của bạn là ${params.otp}. 
-
-        Thân mến,  
-        Free Contest. 
-    `
+type Template = {
+    subject: string;
+    content: (params: { [key: string]: string; }) => string;
 }
 
-var templateSubjectMap: string[] = [];
-
-templateSubjectMap[TEMPLATE_1] = "Mã xác minh (OTP)";
+const TEMPLATES: Record<number,Template> = {
+    10001: {
+        subject: "Mã xác minh (OTP)",
+        content: (params: {[key: string]: string}) => {
+            return  `
+                Chào bạn ${params.displayed_name}, 
+        
+                Mã xác minh của bạn là ${params.otp}. 
+        
+                Thân mến,  
+                Free Contest. 
+            `
+        }
+    }
+}
 
 export function createEmailContent(template_id: number, params: {[key: string]: string}) {
     return {
-        subject: templateSubjectMap[template_id],
-        text: templateTextMap[template_id](params),
+        subject: TEMPLATES[template_id].subject,
+        content: TEMPLATES[template_id].content(params),
     }
 }

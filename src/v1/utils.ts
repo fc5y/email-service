@@ -37,7 +37,6 @@ export async function sendOtp(
     }
 
     if (rateLimiters.sendOtpPerEmail.isFull(recipient_email)) {
-      console.log("hihi");
       throw new LogicError(ERRORS.RECIPIENT_RATE_LIMIT_EXCEEDED);
     }
     
@@ -46,7 +45,7 @@ export async function sendOtp(
       rateLimiters.sendOtpOverall.push("");
       rateLimiters.sendOtpPerEmail.push(recipient_email);
     })
-    .catch((error: LogicError) => {
-      throw new LogicError(ERRORS.SEND_EMAIL_ERROR);
+    .catch((error: Error) => {
+      throw error;
     })
 }
