@@ -1,27 +1,29 @@
 type Template = {
     subject: string;
-    content: (params: { [key: string]: string; }) => string;
+    content: string;
 }
+
+const fillTemplate = function(templateString: any, templateVars: any){
+    return new Function("return `"+templateString +"`;").call(templateVars);
+}
+
 
 const TEMPLATES: Record<number,Template> = {
     10001: {
         subject: "Mã xác minh (OTP)",
-        content: (params: {[key: string]: string}) => {
-            return  `
-                Chào bạn ${params.displayed_name}, 
-        
-                Mã xác minh của bạn là ${params.otp}. 
-        
-                Thân mến,  
-                Free Contest. 
-            `
-        }
+        content: ""
+          + "Chào bạn ${this.displayed_name}, \n"
+          + "\n"
+          + "Mã xác minh của bạn là: ${this.otp}. \n"
+          + "\n"
+          + "Thân mến, \n"
+          + "FreeContest."
     }
 }
 
 export function createEmailContent(template_id: number, params: {[key: string]: string}) {
     return {
-        subject: TEMPLATES[template_id].subject,
-        content: TEMPLATES[template_id].content(params),
+        subject: fillTemplate(TEMPLATES[template_id].subject, params),
+        content: fillTemplate(TEMPLATES[template_id].content, params),
     }
 }

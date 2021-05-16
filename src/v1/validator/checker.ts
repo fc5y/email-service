@@ -12,7 +12,7 @@ export class Checker{
   }
 
   isTemplateId(templateId: number) {
-    return templateId == 10001 ;
+    return templateId === 10001 ;
   }
 
   isParams(params: {[key: string]: string}) {
