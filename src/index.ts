@@ -7,7 +7,7 @@ import cors from "cors";
 import v1 from "./v1";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 app.set("json spaces", 2);
 app.use(cors());
