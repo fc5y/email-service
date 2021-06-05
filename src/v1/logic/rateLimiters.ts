@@ -2,9 +2,9 @@ import { getCurrentTimestamp } from "../utils";
 
 class RateLimiter {
   limit: number;
-  interval:number;
+  interval: number;
   queue: any[];
-  constructor({ limit, interval } : {[key:string]:number}) {
+  constructor({ limit, interval }: { [key: string]: number }) {
     this.limit = limit;
     this.interval = interval;
     this.queue = [];
@@ -23,7 +23,7 @@ class RateLimiter {
   isFull(key: string) {
     this._clean();
     const numQueued = this.queue.filter((item) => item.key === key).length;
-    return (numQueued >= this.limit);
+    return numQueued >= this.limit;
   }
 
   push(key: string) {
