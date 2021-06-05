@@ -1,23 +1,19 @@
-import validator from 'validator';
+import validator from "validator";
 
-export class Checker{
-
+export class Checker {
   isEmail(email: string) {
-    return validator.isEmail(email,{});
+    return validator.isEmail(email, {});
   }
-        
-  isOtp(otp: string) {
-    return validator.matches(otp,/^[0-9]{6}$/);
 
+  isOtp(otp: string) {
+    return validator.matches(otp, /^[0-9]{6}$/);
   }
 
   isTemplateId(templateId: number) {
-    return templateId === 10001 ;
+    return templateId === 10001;
   }
 
-  isParams(params: {[key: string]: string}) {
+  isParams(params: { [key: string]: string }) {
     return !(params.otp == null || params.displayed_name == null);
   }
 }
-
-
