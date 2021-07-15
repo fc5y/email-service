@@ -3,30 +3,34 @@ type Template = {
   content: string;
 };
 
-const fillTemplate = function (templateString: any, templateVars: any) {
-  return new Function("return `" + templateString + "`;").call(templateVars);
-};
-
 const TEMPLATES: Record<number, Template> = {
   10001: {
     subject: "Mã xác minh (OTP)",
     content:
       "" +
-      "Chào bạn ${this.displayed_name}, \n" +
+      "Chào bạn {{displayed_name}}, \n" +
       "\n" +
-      "Mã xác minh của bạn là: ${this.otp}. \n" +
+      "Mã xác minh của bạn là: {{otp}}. \n" +
       "\n" +
       "Thân mến, \n" +
       "FreeContest.",
   },
 };
 
+function fillString( currentString: string, params: { [key: string]: string } ) {
+  return currentString.replace( /\{\{[^}]+\}\}/g, (match) => {
+    const key = match.slice(2, -1).trim(); 
+    return params.hasOwnProperty(key) ?  params[key] : match;
+  })
+}
+
 export function createEmailContent(
   template_id: number,
   params: { [key: string]: string }
 ) {
+  const currentTemplate = TEMPLATES[template_id];
   return {
-    subject: fillTemplate(TEMPLATES[template_id].subject, params),
-    content: fillTemplate(TEMPLATES[template_id].content, params),
-  };
+    subject: fillString(currentTemplate.subject, params),
+    content: fillString(currentTemplate.content, params),
+  }
 }
