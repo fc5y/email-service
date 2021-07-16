@@ -1,32 +1,26 @@
-import * as dotenv from "dotenv";
 import * as google from "googleapis";
 import * as nodemailer from "nodemailer";
 import { createEmailContent } from "./templates";
+import { SENDER_EMAIL, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REFRESH_TOKEN } from "../common-config/index";
 
-dotenv.config();
-
-const oAuth2Client = new google.Auth.OAuth2Client(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URI
-);
+const oAuth2Client = new google.Auth.OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
 
 export async function sendOtpEmail(
   sender_email: string,
   recipient_email: string,
   template_id: number,
-  params: { [key: string]: string }
+  params: { [key: string]: string },
 ) {
   const accessToken = (await oAuth2Client.getAccessToken()).toString();
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       type: "OAuth2",
-      user: process.env.SENDER_EMAIL,
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      refreshToken: process.env.REFRESH_TOKEN,
+      user: SENDER_EMAIL,
+      clientId: CLIENT_ID,
+      clientSecret: CLIENT_SECRET,
+      refreshToken: REFRESH_TOKEN,
       accessToken: accessToken,
     },
   });

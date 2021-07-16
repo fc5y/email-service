@@ -17,12 +17,7 @@ router.get("/timestamp", (req: Request, res: Response) => {
 });
 
 router.post("/send", (req: Request, res: Response) => {
-  sendOtp(
-    req.body.sender_email,
-    req.body.recipient_email,
-    req.body.template_id,
-    req.body.params
-  )
+  sendOtp(req.body.sender_email, req.body.recipient_email, req.body.template_id, req.body.params)
     .then(() => {
       res.json({
         error: 0,
