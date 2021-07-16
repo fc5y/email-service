@@ -12,7 +12,7 @@ export async function sendOtp(
   sender_email: string,
   recipient_email: string,
   template_id: number,
-  params: { [key: string]: string }
+  params: { [key: string]: string },
 ) {
   const checker = new Checker();
   if (!checker.isEmail(sender_email)) {

@@ -17,20 +17,17 @@ const TEMPLATES: Record<number, Template> = {
   },
 };
 
-function fillString( currentString: string, params: { [key: string]: string } ) {
-  return currentString.replace( /\{\{[^}]+\}\}/g, (match) => {
-    const key = match.slice(2, -1).trim(); 
-    return params.hasOwnProperty(key) ?  params[key] : match;
-  })
+function fillString(currentString: string, params: { [key: string]: string }) {
+  return currentString.replace(/\{\{[^}]+\}\}/g, (match) => {
+    const key = match.slice(2, -2).trim();
+    return params.hasOwnProperty(key) ? params[key] : match;
+  });
 }
 
-export function createEmailContent(
-  template_id: number,
-  params: { [key: string]: string }
-) {
+export function createEmailContent(template_id: number, params: { [key: string]: string }) {
   const currentTemplate = TEMPLATES[template_id];
   return {
     subject: fillString(currentTemplate.subject, params),
     content: fillString(currentTemplate.content, params),
-  }
+  };
 }

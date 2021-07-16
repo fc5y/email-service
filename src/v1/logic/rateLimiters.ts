@@ -12,10 +12,7 @@ class RateLimiter {
 
   _clean() {
     const currentTimestamp = getCurrentTimestamp();
-    while (
-      this.queue.length > 0 &&
-      currentTimestamp - this.queue[0].createdAt > this.interval
-    ) {
+    while (this.queue.length > 0 && currentTimestamp - this.queue[0].createdAt > this.interval) {
       this.queue.shift();
     }
   }
