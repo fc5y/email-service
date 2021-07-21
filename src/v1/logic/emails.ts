@@ -1,10 +1,7 @@
-import * as google from "googleapis";
 import * as nodemailer from "nodemailer";
+import { getAccessToken } from './oauth2'
 import { createEmailContent } from "./templates";
-import { SENDER_EMAIL, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, REFRESH_TOKEN } from "../common-config/index";
-
-const oAuth2Client = new google.Auth.OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+import { SENDER_EMAIL, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN } from "../common-config/index";
 
 export async function sendOtpEmail(
   sender_email: string,
@@ -12,7 +9,7 @@ export async function sendOtpEmail(
   template_id: number,
   params: { [key: string]: string },
 ) {
-  const accessToken = (await oAuth2Client.getAccessToken()).toString();
+  const accessToken = await getAccessToken();
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
