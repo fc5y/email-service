@@ -3,11 +3,19 @@ import { ERRORS } from "./constants/errors";
 import { Checker } from "./validator/checker";
 import { sendOtpEmail } from "./logic/emails";
 import { rateLimiters } from "./logic/rateLimiters";
+import { WHITELISTED_RECEIVERS } from "./common-config";
 
 export function getCurrentTimestamp() {
   return Math.floor(new Date().getTime() / 1000);
 }
 
+const REGEX_WHITELISTED_RECEIVERS = ("^" + WHITELISTED_RECEIVERS + "$")
+                                    .split(".").join("\\.")
+                                    .split(";").join("$|^")
+                                    .split("*").join(".*")
+                                    .split("?").join(".?")
+                                    .split("!").join("?!")
+                
 export async function sendOtp(
   sender_email: string,
   recipient_email: string,
@@ -37,6 +45,10 @@ export async function sendOtp(
 
   if (rateLimiters.sendOtpPerEmail.isFull(recipient_email)) {
     throw new LogicError(ERRORS.RECIPIENT_RATE_LIMIT_EXCEEDED);
+  }
+
+  if (!recipient_email.match(REGEX_WHITELISTED_RECEIVERS)) {
+    throw new LogicError(ERRORS.BLOCKED_RECIPIENT_EMAIL);
   }
 
   await sendOtpEmail(sender_email, recipient_email, template_id, params)
