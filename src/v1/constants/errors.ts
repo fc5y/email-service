@@ -31,4 +31,8 @@ export const ERRORS = {
     code: 200007,
     msg: "Invalid params. Must include displayed_name and otp",
   },
+  BLOCKED_RECIPIENT_EMAIL: {
+    code: 200008,
+    msg: "Sending email to this address was blocked. Please ask the Email Service maintainers to add this address into whitelisted receivers.",
+  },
 };

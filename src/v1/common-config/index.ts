@@ -7,6 +7,7 @@ export const CLIENT_ID = process.env.CLIENT_ID || "";
 export const CLIENT_SECRET = process.env.CLIENT_SECRET || "";
 export const REFRESH_TOKEN = process.env.REFRESH_TOKEN || "";
 export const PORT = process.env.PORT || "";
+export const WHITELISTED_RECEIVERS = process.env.WHITELISTED_RECEIVERS || "";
 
 if (!SENDER_EMAIL) {
   throw new Error(`
@@ -39,6 +40,13 @@ if (!REFRESH_TOKEN) {
 if (!PORT) {
   throw new Error(`
     PORT is empty.
+    Make sure the environment variable is available in .env.
+  `);
+}
+
+if (!WHITELISTED_RECEIVERS) {
+  throw new Error(`
+    WHITELISTED_RECEIVERS is empty.
     Make sure the environment variable is available in .env.
   `);
 }
