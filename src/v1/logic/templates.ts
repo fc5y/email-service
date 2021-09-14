@@ -5,12 +5,14 @@ type Template = {
 
 const TEMPLATES: Record<number, Template> = {
   10001: {
-    subject: "Mã xác minh (OTP)",
+    subject: "{{otp}} là mã xác minh Free Contest của bạn.",
     content:
       "" +
       "Chào bạn {{displayed_name}}, \n" +
       "\n" +
+      "Bạn đang tạo một tài khoản Free Contest. \n" +
       "Mã xác minh của bạn là: {{otp}}. \n" +
+      "Mã này có hiệu lực trong 10 phút. \n" +
       "\n" +
       "Thân mến, \n" +
       "FreeContest.",
