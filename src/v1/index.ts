@@ -7,6 +7,30 @@ import { ERRORS } from "./constants/errors";
 
 const router = Router();
 
+router.get("/", (_req: Request, res: Response) => {
+  res.json({
+    error: 0,
+    error_msg: "",
+    // Format: https://docs.npmjs.com/cli/v7/configuring-npm/package-json
+    data: {
+      name: "email-service",
+      version: "1.0.0",
+      description: "Email Service v1",
+      homepage: "",
+      contributors: [
+        {
+          name: "Kien Nguyen",
+          email: "kc97ble@gmail.com"
+        },
+        {
+          name: "Bao-Hiep Le",
+          email: "baohiep2013@gmail.com"
+        }
+      ]
+    }
+  });
+});
+
 router.get("/timestamp", (req: Request, res: Response) => {
   res.json({
     data: {
