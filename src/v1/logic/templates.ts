@@ -29,6 +29,19 @@ const TEMPLATES: Record<number, Template> = {
       "\n" +
       "Thân mến, \n" +
       "FreeContest.",
+  },
+  10003: {
+    subject: "{{otp}} là mã xác minh Free Contest của bạn.",
+    content:
+      "" +
+      "Chào bạn {{displayed_name}}, \n" +
+      "\n" +
+      "Bạn vừa yêu cầu thay đổi email cho tài khoản {{username}} thành {{new_email}}. \n" +
+      "Mã xác minh của bạn là: {{otp}}. \n" +
+      "Mã này có hiệu lực trong 10 phút. \n" +
+      "\n" +
+      "Thân mến, \n" +
+      "FreeContest.",
   }
 };
 
