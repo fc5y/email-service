@@ -17,7 +17,7 @@ export const ERRORS = {
   },
   INVALID_TEMPLATE_ID: {
     code: 200004,
-    msg: "Invalid template id. Must be 10001",
+    msg: "Invalid template id",
   },
   SYSTEM_RATE_LIMIT_EXCEEDED: {
     code: 200005,

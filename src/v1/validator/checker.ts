@@ -1,4 +1,5 @@
 import validator from "validator";
+import { TEMPLATES } from '../logic/templates';
 
 export class Checker {
   isEmail(email: string) {
@@ -10,7 +11,7 @@ export class Checker {
   }
 
   isTemplateId(templateId: number) {
-    return templateId === 10001;
+    return Object.keys(TEMPLATES).includes(templateId.toString());
   }
 
   isParams(params: { [key: string]: string }) {
