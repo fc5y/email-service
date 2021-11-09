@@ -3,7 +3,7 @@ type Template = {
   content: string;
 };
 
-const TEMPLATES: Record<number, Template> = {
+export const TEMPLATES: Record<number, Template> = {
   10001: {
     subject: "{{otp}} là mã xác minh Free Contest của bạn.",
     content:
