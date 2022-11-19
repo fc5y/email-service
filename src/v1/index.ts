@@ -2,7 +2,6 @@ import { Request, Response, Router } from "express";
 import { getCurrentTimestamp } from "./utils";
 import { sendOtp } from "./utils";
 import { LogicError } from "./logic/errors";
-import { generateAuthUrl, generateTokens } from "./logic/oauth2";
 import { ERRORS } from "./constants/errors";
 
 const router = Router();
@@ -68,108 +67,6 @@ router.post("/send", (req: Request, res: Response) => {
         });
       }
     });
-});
-
-router.get("/generate_tokens", (req: Request, res: Response) => {
-  const authUrl = generateAuthUrl();
-  res.send(`
-    <html>
-      <head>
-        <style>
-          label, input, textarea {
-            display: block;
-            width: 100%;
-          }
-        </style>
-      </head>
-      <body>
-        Go to this url <a rel="nofollow" target="_blank" href="${authUrl}">${authUrl}</a>
-        <br/><br/>
-        <label>Paste the code here:</label>
-        <input id="code" type="text" value=""/>
-        <button onClick="submit()">Get tokens</button>
-        <label>Response</label>
-        <textarea id="response" readonly rows=10></textarea>
-        <label>Error</label>
-        <textarea id="error" readonly></textarea>
-        <script>
-          function submit() {
-            const elCode = document.getElementById("code");
-            const elResponse = document.getElementById("response");
-            const elError = document.getElementById("error");
-
-            fetch('/email/v1/generate_tokens', {
-              method: 'POST',
-              body: JSON.stringify({ code: elCode.value }),
-              headers: { 'Content-Type': 'application/json' },
-            })
-              .then(response => response.text())
-              .then((data) => {
-                elResponse.value = data;
-                elError.value = "";
-              })
-              .catch((error) => {
-                console.log(error);
-                console.log(error.toString());
-                elResponse.value = "";
-                elError.value = error.toString();
-              });
-          }
-        </script>
-      </body>
-    </html>
-  `);
-});
-
-router.post("/generate_tokens", async (req: Request, res: Response) => {
-  try {
-    const { access_token, refresh_token } = await generateTokens(req.body.code);
-    res.json({
-      error: 0,
-      error_msg: "",
-      data: { access_token, refresh_token },
-    });
-  } catch (err: any) {
-    res.json({
-      error: err.code,
-      error_msg: err.message,
-    });
-  }
-});
-
-router.get("/request_tokens", async (req, res) => {
-  res.send(`
-    <html>
-    <head>
-      <script
-        src="https://accounts.google.com/gsi/client"
-        onload="console.log('loaded')"
-      ></script>
-    </head>
-    <body>
-      <script>
-        function onLoad() {
-          const client = google.accounts.oauth2.initCodeClient({
-            client_id: 'YOUR_GOOGLE_CLIENT_ID',
-            scope: 'https://www.googleapis.com/auth/calendar.readonly',
-            ux_mode: 'popup',
-            callback: (response) => {
-              const xhr = new XMLHttpRequest();
-              xhr.open('POST', code_receiver_uri, true);
-              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-              // Set custom header for CRSF
-              xhr.setRequestHeader('X-Requested-With', 'XmlHttpRequest');
-              xhr.onload = function() {
-                console.log('Auth code response: ' + xhr.responseText);
-              };
-              xhr.send('code=' + code);
-            },
-          });
-        }
-      </script>
-    </body>
-    </html>
-  `);
 });
 
 export default router;
