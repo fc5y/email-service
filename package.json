@@ -2,7 +2,24 @@
   "name": "email-service",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://github.com/fc5y/email-service#readme",
+  "bugs": {
+    "url": "https://github.com/fc5y/email-service/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fc5y/email-service.git"
+  },
+  "license": "MIT",
+  "author": "",
   "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "build-and-watch": "tsc --watch",
+    "dev": "nodemon src/index.ts",
+    "postinstall": "sort-package-json",
+    "serve": "nodemon dist/index.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -18,21 +35,7 @@
     "@types/nodemailer": "^6.4.2",
     "@types/validator": "^13.1.3",
     "nodemon": "^2.0.7",
+    "sort-package-json": "^2.1.0",
     "typescript": "^4.3.2"
-  },
-  "scripts": {
-    "build": "tsc",
-    "build-and-watch": "tsc --watch",
-    "serve": "nodemon dist/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fc5y/email-service.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fc5y/email-service/issues"
-  },
-  "homepage": "https://github.com/fc5y/email-service#readme"
+  }
 }

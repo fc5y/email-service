@@ -20,14 +20,14 @@ router.get("/", (_req: Request, res: Response) => {
       contributors: [
         {
           name: "Kien Nguyen",
-          email: "kc97ble@gmail.com"
+          email: "kc97ble@gmail.com",
         },
         {
           name: "Bao-Hiep Le",
-          email: "baohiep2013@gmail.com"
-        }
-      ]
-    }
+          email: "baohiep2013@gmail.com",
+        },
+      ],
+    },
   });
 });
 
@@ -42,7 +42,12 @@ router.get("/timestamp", (req: Request, res: Response) => {
 });
 
 router.post("/send", (req: Request, res: Response) => {
-  sendOtp(req.body.sender_email, req.body.recipient_email, req.body.template_id, req.body.params)
+  sendOtp(
+    req.body.sender_email,
+    req.body.recipient_email,
+    req.body.template_id,
+    req.body.params
+  )
     .then(() => {
       res.json({
         error: 0,
@@ -124,12 +129,47 @@ router.post("/generate_tokens", async (req: Request, res: Response) => {
       error_msg: "",
       data: { access_token, refresh_token },
     });
-  } catch (err) {
+  } catch (err: any) {
     res.json({
       error: err.code,
       error_msg: err.message,
     });
   }
+});
+
+router.get("/request_tokens", async (req, res) => {
+  res.send(`
+    <html>
+    <head>
+      <script
+        src="https://accounts.google.com/gsi/client"
+        onload="console.log('loaded')"
+      ></script>
+    </head>
+    <body>
+      <script>
+        function onLoad() {
+          const client = google.accounts.oauth2.initCodeClient({
+            client_id: 'YOUR_GOOGLE_CLIENT_ID',
+            scope: 'https://www.googleapis.com/auth/calendar.readonly',
+            ux_mode: 'popup',
+            callback: (response) => {
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', code_receiver_uri, true);
+              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+              // Set custom header for CRSF
+              xhr.setRequestHeader('X-Requested-With', 'XmlHttpRequest');
+              xhr.onload = function() {
+                console.log('Auth code response: ' + xhr.responseText);
+              };
+              xhr.send('code=' + code);
+            },
+          });
+        }
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 export default router;
